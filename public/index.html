@@ -2,7 +2,7 @@
 <html>
     <head>
         <title>REGGAE-LYRICS.COM Online Reggae Dub Sampler v0.2</title>
-        <meta name="author" content="Jorge Matricali <jorge.matricali@gmail.com>">
+        <meta name="author" content="Jorge Matricali <jorgematricali@gmail.com>">
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
@@ -26,7 +26,7 @@
                 max-height: 500px;
                 margin: auto;
             }
-            
+
             #sampler-machine:before {
                 content: ' ';
                 position: relative;
@@ -34,7 +34,7 @@
                 width: 10px;
                 height: 100%;
             }
-            
+
             #sampler {
                 margin: 5%;
                 padding-top: 40px;
@@ -54,7 +54,7 @@
                 position: absolute;
                 left: 0;
                 border-radius: 10px;
-                text-shadow: #333 5px; 
+                text-shadow: #333 5px;
 
                 background: #8f787e;
                 background-image: -webkit-linear-gradient(top, #8f787e, #7d4c4f);
@@ -93,30 +93,69 @@
     </head>
     <body>
         <div id="sampler-machine">
+
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active"><a href="#1-8" aria-controls="home" role="tab" data-toggle="tab">1-8</a></li>
+                <li role="presentation"><a href="#9-16" aria-controls="profile" role="tab" data-toggle="tab">9-16</a></li>
+                <li role="presentation"><a href="#messages" aria-controls="18-26" role="tab" data-toggle="tab">18-26</a></li>
+            </ul>
+
+
             <div id="sampler" style="display: none;" class="container-fluid">
-                <div class="imageContainer col-md-4 col-xs-6">
-                    <button class="btn btn-sampler" data-sampler-id="1">Sampler 1</button>
-                </div>
-                <div class="imageContainer col-md-4 col-xs-6">
-                    <button class="btn btn-sampler" data-sampler-id="2">Sampler 2</button>
-                </div>
-                <div class="imageContainer col-md-4 col-xs-6">
-                    <button class="btn btn-sampler" data-sampler-id="3">Sampler 3</button>
-                </div>
-                <div class="imageContainer col-md-4 col-xs-6">
-                    <button class="btn btn-sampler" data-sampler-id="4">Sampler 4</button>
-                </div>
-                <div class="imageContainer col-md-4 col-xs-6">
-                    <button class="btn btn-sampler" data-sampler-id="5">Sampler 5</button>
-                </div>
-                <div class="imageContainer col-md-4 col-xs-6">
-                    <button class="btn btn-sampler" data-sampler-id="6">Sampler 6</button>
-                </div>
-                <div class="imageContainer col-md-4 col-xs-6">
-                    <button class="btn btn-sampler" data-sampler-id="7">Sampler 7</button>
-                </div>
-                <div class="imageContainer col-md-4 col-xs-6">
-                    <button class="btn btn-sampler" data-sampler-id="8">Sampler 8</button>
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="1-8">
+                        <div class="imageContainer col-md-4 col-xs-6">
+                            <button class="btn btn-sampler" data-sampler-id="1">Sampler 1</button>
+                        </div>
+                        <div class="imageContainer col-md-4 col-xs-6">
+                            <button class="btn btn-sampler" data-sampler-id="2">Sampler 2</button>
+                        </div>
+                        <div class="imageContainer col-md-4 col-xs-6">
+                            <button class="btn btn-sampler" data-sampler-id="3">Sampler 3</button>
+                        </div>
+                        <div class="imageContainer col-md-4 col-xs-6">
+                            <button class="btn btn-sampler" data-sampler-id="4">Sampler 4</button>
+                        </div>
+                        <div class="imageContainer col-md-4 col-xs-6">
+                            <button class="btn btn-sampler" data-sampler-id="5">Sampler 5</button>
+                        </div>
+                        <div class="imageContainer col-md-4 col-xs-6">
+                            <button class="btn btn-sampler" data-sampler-id="6">Sampler 6</button>
+                        </div>
+                        <div class="imageContainer col-md-4 col-xs-6">
+                            <button class="btn btn-sampler" data-sampler-id="7">Sampler 7</button>
+                        </div>
+                        <div class="imageContainer col-md-4 col-xs-6">
+                            <button class="btn btn-sampler" data-sampler-id="8">Sampler 8</button>
+                        </div>
+                    </div>
+
+                    <div role="tabpanel" class="tab-pane" id="9-16">
+                        <div class="imageContainer col-md-4 col-xs-6">
+                            <button class="btn btn-sampler" data-sampler-id="9">Sampler 9</button>
+                        </div>
+                        <div class="imageContainer col-md-4 col-xs-6">
+                            <button class="btn btn-sampler" data-sampler-id="10">Sampler 10</button>
+                        </div>
+                        <div class="imageContainer col-md-4 col-xs-6">
+                            <button class="btn btn-sampler" data-sampler-id="11">Sampler 11</button>
+                        </div>
+                        <div class="imageContainer col-md-4 col-xs-6">
+                            <button class="btn btn-sampler" data-sampler-id="12">Sampler 12</button>
+                        </div>
+                        <div class="imageContainer col-md-4 col-xs-6">
+                            <button class="btn btn-sampler" data-sampler-id="13">Sampler 13</button>
+                        </div>
+                        <div class="imageContainer col-md-4 col-xs-6">
+                            <button class="btn btn-sampler" data-sampler-id="14">Sampler 14</button>
+                        </div>
+                        <div class="imageContainer col-md-4 col-xs-6">
+                            <button class="btn btn-sampler" data-sampler-id="15">Sampler 15</button>
+                        </div>
+                        <div class="imageContainer col-md-4 col-xs-6">
+                            <button class="btn btn-sampler" data-sampler-id="16">Sampler 16</button>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div id="speaker"></div>
@@ -182,6 +221,8 @@
             var bufferL = new Array();
             var sources = new Array();
 
+            var bsdkd = new Array();
+
             window.onload = init;
             window.onerror = onError;
 
@@ -198,22 +239,28 @@
                     gainNode = context.createGain ? context.createGain() : context.createGainNode();
                     gainNode.connect(context.destination);
                     gainNode.gain.value = 0.7;
-                    
+
                     console.log("AudioContext created successfully.\nLoading sounds...");
                     bufferLoader = new BufferLoader(
                             context,
                             [
+                                'audio/hardkick.wav',
+                                'audio/kick3.wav',
+                                'audio/Shatter.wav',
+                                'audio/snare3.wav',
                                 'audio/AirHorn-Reggae.mp3',
                                 'audio/Triple-Horn.mp3',
-                                //'audio/Mad-Horn.mp3',
-                                //'audio/Mortal-Pulop.mp3',
                                 'audio/Wooy.mp3',
                                 'audio/Boat-Land-Man.mp3',
                                 'audio/Ya-Man.mp3',
                                 'audio/Yes-JAH.mp3',
                                 'audio/The-Rockers-to-Rockers.mp3',
                                 'audio/Laseers002.wav',
-                                'audio/Laseers003.wav'
+                                // ...
+                                'audio/Laseers003.wav',
+                                'audio/Mortal-Pulop.mp3',
+                                'audio/No-No-No-Intro-long.mp3',
+                                'audio/No-No-No-Intro-short.mp3',
                             ],
                             finishedLoading
                             );
@@ -245,56 +292,72 @@
                 source.buffer = buffer;
                 source.connect(gainNode);
                 source.start(time);
+                return source;
             }
 
-            function playSlot(slot_id) {
-                if (bufferL.hasOwnProperty(slot_id)) {
+            function playSlot(slot_id, no_cortar) {
+                if (no_cortar !== undefined && no_cortar) {
                     playSound(bufferL[slot_id], 0);
+                    return;
+                }
+
+                if (bsdkd.hasOwnProperty(slot_id)) {
+                    bsdkd[slot_id].stop();
+                }
+
+                if (bufferL.hasOwnProperty(slot_id)) {
+                    bsdkd[slot_id] = playSound(bufferL[slot_id], 0);
                 }
             }
 
             $("#sampler button").click(function() {
                 var id = $(this).attr("data-sampler-id");
                 if (id) {
-                    playSlot(id);
+                    playSlot(id-1);
                 }
             });
-            
+
             $(document).keypress(function(e) {
                 //console.log(e.which);
                 switch (e.which) {
                     case 49:
-                        playSlot(0);
+                        playSlot(0, e.ctrlKey);
                         break;
                     case 50:
-                        playSlot(1);
+                        playSlot(1, e.ctrlKey);
                         break;
                     case 51:
-                        playSlot(2);
+                        playSlot(2, e.ctrlKey);
                         break;
                     case 52:
-                        playSlot(3);
+                        playSlot(3, e.ctrlKey);
                         break;
                     case 53:
-                        playSlot(4);
+                        playSlot(4, e.ctrlKey);
                         break;
                     case 54:
-                        playSlot(5);
+                        playSlot(5, e.ctrlKey);
                         break;
                     case 55:
-                        playSlot(6);
+                        playSlot(6, e.ctrlKey);
                         break;
                     case 56:
-                        playSlot(7);
+                        playSlot(7, e.ctrlKey);
                         break;
                     case 57:
-                        playSlot(8);
+                        playSlot(8, e.ctrlKey);
                         break;
                     case 115:
                         osc.play(0);
                         break;
                 }
             });
+
+            // window.setInterval(function() {
+            //     for (i = 0; i < bsdkd.length; i++) {
+            //         if (bsdkd[i] !== undefined && bsdkd[i].)
+            //     }
+            // });
         </script>
     </body>
 </html>
