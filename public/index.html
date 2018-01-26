@@ -97,7 +97,7 @@
             <ul class="nav nav-tabs" role="tablist">
                 <li role="presentation" class="active"><a href="#1-8" aria-controls="home" role="tab" data-toggle="tab">1-8</a></li>
                 <li role="presentation"><a href="#9-16" aria-controls="profile" role="tab" data-toggle="tab">9-16</a></li>
-                <li role="presentation"><a href="#messages" aria-controls="18-26" role="tab" data-toggle="tab">18-26</a></li>
+                <li role="presentation"><a href="#17-24" aria-controls="18-26" role="tab" data-toggle="tab">17-24</a></li>
             </ul>
 
 
@@ -154,6 +154,33 @@
                         </div>
                         <div class="imageContainer col-md-4 col-xs-6">
                             <button class="btn btn-sampler" data-sampler-id="16">Sampler 16</button>
+                        </div>
+                    </div>
+
+                    <div role="tabpanel" class="tab-pane" id="17-24">
+                        <div class="imageContainer col-md-4 col-xs-6">
+                            <button class="btn btn-sampler" data-sampler-id="9">Sampler 17</button>
+                        </div>
+                        <div class="imageContainer col-md-4 col-xs-6">
+                            <button class="btn btn-sampler" data-sampler-id="10">Sampler 18</button>
+                        </div>
+                        <div class="imageContainer col-md-4 col-xs-6">
+                            <button class="btn btn-sampler" data-sampler-id="11">Sampler 19</button>
+                        </div>
+                        <div class="imageContainer col-md-4 col-xs-6">
+                            <button class="btn btn-sampler" data-sampler-id="12">Sampler 20</button>
+                        </div>
+                        <div class="imageContainer col-md-4 col-xs-6">
+                            <button class="btn btn-sampler" data-sampler-id="13">Sampler 21</button>
+                        </div>
+                        <div class="imageContainer col-md-4 col-xs-6">
+                            <button class="btn btn-sampler" data-sampler-id="14">Sampler 22</button>
+                        </div>
+                        <div class="imageContainer col-md-4 col-xs-6">
+                            <button class="btn btn-sampler" data-sampler-id="15">Sampler 23</button>
+                        </div>
+                        <div class="imageContainer col-md-4 col-xs-6">
+                            <button class="btn btn-sampler" data-sampler-id="16">Sampler 24</button>
                         </div>
                     </div>
                 </div>
@@ -318,34 +345,42 @@
             });
 
             $(document).keypress(function(e) {
+                var offset = 0;
+
+                if ($('#9-16').hasClass('active')) {
+                    offset = 8;
+                }
+                if ($('#17-24').hasClass('active')) {
+                    offset = 16;
+                }
                 //console.log(e.which);
                 switch (e.which) {
                     case 49:
-                        playSlot(0, e.ctrlKey);
+                        playSlot(0 + offset, e.ctrlKey);
                         break;
                     case 50:
-                        playSlot(1, e.ctrlKey);
+                        playSlot(1 + offset, e.ctrlKey);
                         break;
                     case 51:
-                        playSlot(2, e.ctrlKey);
+                        playSlot(2 + offset, e.ctrlKey);
                         break;
                     case 52:
-                        playSlot(3, e.ctrlKey);
+                        playSlot(3 + offset, e.ctrlKey);
                         break;
                     case 53:
-                        playSlot(4, e.ctrlKey);
+                        playSlot(4 + offset, e.ctrlKey);
                         break;
                     case 54:
-                        playSlot(5, e.ctrlKey);
+                        playSlot(5 + offset, e.ctrlKey);
                         break;
                     case 55:
-                        playSlot(6, e.ctrlKey);
+                        playSlot(6 + offset, e.ctrlKey);
                         break;
                     case 56:
-                        playSlot(7, e.ctrlKey);
+                        playSlot(7 + offset, e.ctrlKey);
                         break;
                     case 57:
-                        playSlot(8, e.ctrlKey);
+                        playSlot(8 + offset, e.ctrlKey);
                         break;
                     case 115:
                         osc.play(0);
