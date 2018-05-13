@@ -29,7 +29,7 @@ SOFTWARE.
         <meta name="author" content="Jorge Matricali <jorgematricali@gmail.com>">
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+        <!-- <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet"> -->
         <style>
             body {
                 background-color: #000;
@@ -113,15 +113,48 @@ SOFTWARE.
                 top: 5%;
                 left: 5%;
             }
+            .tab-pane {
+                display: none;
+            }
+            .tab-pane.active {
+                display: block;
+            }
+            ul.nav-tabs {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+            ul.nav-tabs li {
+                display: inline;
+                border: solid;
+                border-width: 1px 1px 0 1px;
+                margin: 0 5px 0 0;
+                border-radius: 5px 5px 0px 0px;
+                padding: 5px;
+                font-size: 1em;
+                font-family: sans-serif;
+                background: rgba(255,255,255,0.5);
+            }
+            ul.nav-tabs li.active {
+                bottom: -2px;
+                background: white;
+            }
+            ul.nav-tabs li a {
+                padding: 0 10px;
+                color: #fff;
+            }
+            ul.nav-tabs li.active a {
+                color: #000;
+            }
         </style>
     </head>
     <body>
         <div id="sampler-machine">
 
             <ul class="nav nav-tabs" role="tablist">
-                <li role="presentation" class="active"><a href="#1-8" aria-controls="home" role="tab" data-toggle="tab">1-8</a></li>
-                <li role="presentation"><a href="#9-16" aria-controls="profile" role="tab" data-toggle="tab">9-16</a></li>
-                <li role="presentation"><a href="#17-24" aria-controls="18-26" role="tab" data-toggle="tab">17-24</a></li>
+                <li role="presentation" class="active"><a href="#1-8" aria-controls="1-8" role="tab" data-toggle="tab">1-8</a></li>
+                <li role="presentation"><a href="#9-16" aria-controls="9-16" role="tab" data-toggle="tab">9-16</a></li>
+                <li role="presentation"><a href="#17-24" aria-controls="17-24" role="tab" data-toggle="tab">17-24</a></li>
             </ul>
 
 
@@ -211,11 +244,15 @@ SOFTWARE.
             </div>
             <div id="speaker"></div>
         </div>
+
+        <a href="https://github.com/jorge-matricali/html5-sampler/">
+            <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png" alt="Fork me on GitHub">
+        </a>
+
         <input type="file" id="file-input" />
-        <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
-        <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-        <script src="js/html5-sampler.js"></script>
-        <script src="js/html5-sampler-midi.js"></script>
+
+        <script src="../js/html5-sampler.js"></script>
+        <script src="../js/html5-sampler-midi.js"></script>
         <script>
             var sampler;
 
@@ -240,6 +277,32 @@ SOFTWARE.
                         }
                     })
                 });
+
+                var tabs = document.querySelectorAll('a[data-toggle="tab"]');
+
+                [].forEach.call(tabs, function (t) {
+                    t.addEventListener('click', function (e) {
+                        var id = this.getAttribute('aria-controls');
+
+                        var tabPanes = document.querySelectorAll('.tab-pane');;
+                        [].forEach.call(tabPanes, function (e) {
+                            e.classList.remove('active');
+                        });
+
+                        var tabs = document.querySelectorAll('a[data-toggle="tab"]');
+                        [].forEach.call(tabs, function (e) {
+                            e.parentNode.classList.remove('active');
+                            if (e.getAttribute('aria-controls') == id) {
+                                e.parentNode.classList.add('active');
+                            }
+                        });
+
+                        if (id) {
+                            var elm = document.getElementById(id);
+                            elm.classList.add('active');
+                        }
+                    })
+                })
 
                 document.addEventListener('keypress', function (e) {
                     var offset = 0;
