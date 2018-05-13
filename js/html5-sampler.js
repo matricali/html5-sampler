@@ -89,7 +89,7 @@ Sampler.prototype.finishedLoading = function (bufferList) {
         sampler.bufferL.push(bufferList[index]);
     }
     console.log('Sounds loaded.');
-    $('#sampler').show();
+    document.getElementById('sampler').style.display = 'block';
 };
 
 Sampler.prototype.init = function () {
