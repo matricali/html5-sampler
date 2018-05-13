@@ -97,6 +97,9 @@ function Sampler(container, config) {
     this.bufferL = [];
     this.sourcers = [];
     this.bsdkd = [];
+    this.analyser = null;
+    this.analyserCanvas = null;
+    this.analyserCanvasCtx = null;
 }
 
 Sampler.prototype.finishedLoading = function (bufferList) {
@@ -180,6 +183,15 @@ Sampler.prototype.initUI = function () {
     var tabContent = document.createElement('div');
     tabContent.classList.add('tab-content');
 
+    var visualizer = document.createElement('canvas');
+    visualizer.id = 'visualizer';
+    visualizer.style.width = '100%';
+    visualizer.style.height = '100px';
+    visualizer.style.display = 'block';
+
+    sampler.analyserCanvas = visualizer;
+    sampler.analyserCanvasCtx = visualizer.getContext('2d');
+
     for (var i = 0; i < sampler.config.options.samplesPages; i++) {
         console.log('Pagina #'+(i+1));
 
@@ -213,6 +225,7 @@ Sampler.prototype.initUI = function () {
         tabContent.appendChild(tabPane);
     }
 
+    sampler.container.appendChild(visualizer);
     sampler.container.appendChild(samplerTabs);
     sampler.container.appendChild(tabContent);
 
@@ -221,6 +234,8 @@ Sampler.prototype.initUI = function () {
     }
 
     sampler.container.style.display = 'block';
+
+    sampler.visualize();
 };
 
 Sampler.prototype.init = function () {
@@ -234,6 +249,7 @@ Sampler.prototype.init = function () {
     // Fix up prefixing
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
     sampler.context = new AudioContext();
+    sampler.analyser = sampler.context.createAnalyser();
 
     if (!sampler.context) {
         console.log('ERROR: The sampler cannot be started.');
@@ -263,8 +279,16 @@ Sampler.prototype.playSound = function (buffer, time) {
     var sampler = this;
     var source = sampler.context.createBufferSource();
     source.buffer = buffer;
+    source.connect(sampler.analyser);
     source.connect(sampler.gainNode);
     source.start(time);
+    // window.setInterval(function(){
+    //     console.log(source);
+    // }, 500);
+    // onPlaying: (playingProgress, maximumValue, currentValue) => {
+    //         console.log('playing: ', playingProgress, maximumValue, currentValue);
+    //         playerUI.setPlayingProgress(playingProgress);
+    //     },
     return source;
 };
 
@@ -346,4 +370,56 @@ Sampler.prototype.loadLocalSound = function (e) {
         );
     };
     reader.readAsArrayBuffer(file);
+};
+
+
+Sampler.prototype.visualize = function () {
+    var analyser = sampler.analyser;
+    var canvas = sampler.analyserCanvas;
+    var canvasCtx = sampler.analyserCanvasCtx;
+
+    WIDTH = canvas.width;
+    HEIGHT = canvas.height;
+    analyser.fftSize = 2048;
+    var bufferLength = analyser.fftSize;
+    console.log(bufferLength);
+    var dataArray = new Uint8Array(bufferLength);
+
+    canvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
+
+    var draw = function() {
+        var grad = canvasCtx.createLinearGradient(50, 50, 150, 150);
+        grad.addColorStop(0, 'red');
+        grad.addColorStop(0.5, 'yellow');
+        grad.addColorStop(1, 'green');
+
+        drawVisual = requestAnimationFrame(draw);
+        analyser.getByteTimeDomainData(dataArray);
+        canvasCtx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+        canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
+        canvasCtx.lineWidth = 2;
+        canvasCtx.strokeStyle = grad; //'rgb(200, 0, 0)';
+        canvasCtx.beginPath();
+
+        var sliceWidth = WIDTH * 1.0 / bufferLength;
+        var x = 0;
+
+        for(var i = 0; i < bufferLength; i++) {
+            var v = dataArray[i] / 128.0;
+            var y = v * HEIGHT/2;
+
+            if (i === 0) {
+                canvasCtx.moveTo(x, y);
+            } else {
+                canvasCtx.lineTo(x, y);
+            }
+
+            x += sliceWidth;
+        }
+
+        canvasCtx.lineTo(canvas.width, canvas.height/2);
+        canvasCtx.stroke();
+    };
+
+    draw();
 };
