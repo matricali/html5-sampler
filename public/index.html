@@ -187,9 +187,52 @@
             </div>
             <div id="speaker"></div>
         </div>
+        <input type="file" id="file-input" />
         <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
         <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
         <script src="js/html5-sampler.js"></script>
         <script src="js/html5-sampler-midi.js"></script>
+        <script>
+            var sampler;
+
+            function onError(e) {
+                console.log(e);
+            }
+
+            function onLoad(e) {
+                sampler = new Sampler();
+                sampler.init();
+
+                document.getElementById('file-input')
+                    .addEventListener('change', sampler.loadLocalSound, false);
+
+                var buttons = document.querySelectorAll('#sampler button');
+                
+                [].forEach.call(buttons, function (b) {
+                    b.addEventListener('click', function (e) {
+                        var id = this.dataset.samplerId;
+                        if (id) {
+                            sampler.playSlot(id-1);
+                        }
+                    })
+                });
+
+                document.addEventListener('keypress', function (e) {
+                    var offset = 0;
+
+                    if (document.getElementById('9-16').classList.contains('active')) {
+                        offset = 8;
+                    }
+                    if (document.getElementById('17-24').classList.contains('active')) {
+                        offset = 16;
+                    }
+
+                    sampler.keyPress(e, offset);
+                })
+            }
+
+            window.onload = onLoad;
+            window.onerror = onError;
+        </script>
     </body>
 </html>
