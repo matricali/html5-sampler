@@ -55,10 +55,11 @@ body {
 .imageContainer {
     position: relative;
     width: 23%;
-    padding-bottom: 25%;
+    padding-bottom: 23%;
     float: left;
     height: 0;
     margin: 1%;
+    margin-bottom: 25px;
 }
 
 .btn-sampler {
@@ -130,5 +131,20 @@ ul.nav-tabs li.active a {
 @media (max-width: 600px) {
     #fork-me {
         display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .imageContainer {
+        width: 23%;
+        padding-bottom: 23%;
+    }
+}
+
+@media (min-width: 900px) {
+    .imageContainer {
+        width: 10%;
+        padding-bottom: 10%;
+        margin-bottom: 20px;
     }
 }
