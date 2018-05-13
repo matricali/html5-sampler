@@ -24,6 +24,7 @@ SOFTWARE.
 */
 
 function BufferLoader(context, urlList, callback) {
+    this.container = null;
     this.context = context;
     this.urlList = urlList;
     this.onload = callback;
@@ -75,7 +76,21 @@ function arrayHasOwnIndex(array, prop) {
     return array.hasOwnProperty(prop) && /^0$|^[1-9]\d*$/.test(prop) && prop <= 4294967294; // 2^32 - 2
 }
 
-function Sampler() {
+function Sampler(container, config) {
+    if (!(container instanceof HTMLElement)) {
+        console.error(':@');
+        return;
+    }
+
+    var defaultOptions = {
+        options: {
+            samplesPerPage: 8,
+            samplesPages: 4
+        },
+        samples: []
+    };
+    this.config = Object.assign({}, defaultOptions, config);
+    this.container = container;
     this.context = null;
     this.gainNode = null;
     this.bufferLoader = null;
@@ -89,49 +104,138 @@ Sampler.prototype.finishedLoading = function (bufferList) {
         sampler.bufferL.push(bufferList[index]);
     }
     console.log('Sounds loaded.');
-    document.getElementById('sampler').style.display = 'block';
+    sampler.container.style.display = 'block';
+};
+
+Sampler.prototype.createButton = function (parent, id) {
+    var button = document.createElement('button');
+    button.classList.add('btn', 'btn-sampler');
+    button.dataset.samplerId = id;
+    button.innerHTML = 'Sampler ' + id;
+    button.addEventListener('click', function (e) {
+        var id = this.dataset.samplerId;
+        if (id) {
+            sampler.playSlot(id-1);
+        }
+    });
+    var container = document.createElement('div');
+    container.classList.add('imageContainer', 'col-md-4', 'col-xs-6');
+    container.appendChild(button);
+    console.log('Appending button #' + id);
+    parent.appendChild(container);
+};
+
+Sampler.prototype.onTabChange = function (e) {
+    console.log('Switching tab...');
+    var id = this.getAttribute('aria-controls');
+
+    var tabPanes = document.querySelectorAll('.tab-pane');
+    [].forEach.call(tabPanes, function (e) {
+        e.classList.remove('active');
+    });
+
+    var tabs = document.querySelectorAll('a[data-toggle="tab"]');
+    [].forEach.call(tabs, function (e) {
+        e.parentNode.classList.remove('active');
+        if (e.getAttribute('aria-controls') == id) {
+            e.parentNode.classList.add('active');
+        }
+    });
+
+    if (id) {
+        var elm = document.getElementById(id);
+        elm.classList.add('active');
+    }
+};
+
+Sampler.prototype.initUI = function () {
+    console.log('Initializing sampler UI...');
+    // Creating tabs and sampler buttons
+    var samplerTabs = document.createElement('ul');
+    samplerTabs.classList.add('nav', 'nav-tabs');
+    samplerTabs.role = 'tablist';
+
+    var samplerArea = document.createElement('div');
+    samplerArea.id = 'sampler';
+    samplerArea.style.display = 'none';
+    samplerArea.classList.add('container-fluid');
+
+    var tabContent = document.createElement('div');
+    tabContent.classList.add('tab-content');
+
+    for (var i = 0; i < sampler.config.options.samplesPages; i++) {
+        console.log('Pagina #'+(i+1));
+
+        var min = (i * sampler.config.options.samplesPerPage) + 1;
+        var max = min + sampler.config.options.samplesPerPage - 1;
+        var name = min + '-' + max;
+
+        var tab = document.createElement('li');
+        tab.role = 'presentation';
+        tab.classList.add('active');
+
+        var tabLink = document.createElement('a');
+        tabLink.href = '#' + name;
+        tabLink.setAttribute('aria-controls', name);
+        tabLink.role = 'tab';
+        tabLink.dataset.toggle = 'tab';
+        tabLink.innerHTML = name;
+        tabLink.addEventListener('click', sampler.onTabChange);
+
+        tab.appendChild(tabLink);
+        samplerTabs.appendChild(tab);
+
+        var tabPane = document.createElement('div');
+        tabPane.role = 'tabpanel';
+        tabPane.classList.add('tab-pane');
+        tabPane.id = name;
+
+        for (var x = min; x <= max; x++) {
+            sampler.createButton(tabPane, x);
+        }
+        tabContent.appendChild(tabPane);
+
+        sampler.container.appendChild(samplerTabs);
+        sampler.container.appendChild(tabContent);
+
+        if (samplerTabs.firstChild) {
+            samplerTabs.firstChild.firstChild.click();
+        }
+    }
 };
 
 Sampler.prototype.init = function () {
     var sampler = this;
+
+    while (sampler.container.firstChild){
+        sampler.container.removeChild(sampler.container.firstChild);
+    }
+
     console.log('Loading sampler...');
     // Fix up prefixing
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
     sampler.context = new AudioContext();
-    if (sampler.context) {
-        sampler.gainNode = sampler.context.createGain ? sampler.context.createGain() : sampler.context.createGainNode();
-        sampler.gainNode.connect(sampler.context.destination);
-        sampler.gainNode.gain.value = 0.7;
 
-        console.log('AudioContext created successfully.\nLoading sounds...');
-        sampler.bufferLoader = new BufferLoader(
-            sampler.context,
-            [
-                'audio/hardkick.wav',
-                'audio/kick3.wav',
-                'audio/Shatter.wav',
-                'audio/snare3.wav',
-                'audio/AirHorn-Reggae.mp3',
-                'audio/Triple-Horn.mp3',
-                'audio/Wooy.mp3',
-                'audio/Boat-Land-Man.mp3',
-                'audio/Ya-Man.mp3',
-                'audio/Yes-JAH.mp3',
-                'audio/The-Rockers-to-Rockers.mp3',
-                'audio/Laseers002.wav',
-                // ...
-                'audio/Laseers003.wav',
-                'audio/Mortal-Pulop.mp3',
-                'audio/No-No-No-Intro-long.mp3',
-                'audio/No-No-No-Intro-short.mp3',
-            ],
-            sampler.finishedLoading
-        );
-
-        sampler.bufferLoader.load();
-        return 0;
+    if (!sampler.context) {
+        console.log('ERROR: The sampler cannot be started.');
+        return -1;
     }
-    console.log('ERROR: The sampler cannot be started.');
+
+    sampler.gainNode = sampler.context.createGain ? sampler.context.createGain() : sampler.context.createGainNode();
+    sampler.gainNode.connect(sampler.context.destination);
+    sampler.gainNode.gain.value = 0.7;
+
+    console.log('AudioContext created successfully.\nLoading sounds...');
+    sampler.bufferLoader = new BufferLoader(
+        sampler.context,
+        sampler.config.samples,
+        sampler.finishedLoading
+    );
+
+    sampler.bufferLoader.load();
+    sampler.initUI();
+
+    return 0;
 };
 
 Sampler.prototype.playSound = function (buffer, time) {
