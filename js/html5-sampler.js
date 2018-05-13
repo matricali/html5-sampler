@@ -240,7 +240,7 @@ Sampler.prototype.init = function () {
         return -1;
     }
 
-    context.resume().then(function () {
+    sampler.context.resume().then(function () {
         console.log('Audio context playback resumed successfully');
     });
 
