@@ -104,7 +104,7 @@ Sampler.prototype.finishedLoading = function (bufferList) {
         sampler.bufferL.push(bufferList[index]);
     }
     console.log('Sounds loaded.');
-    sampler.container.style.display = 'block';
+    sampler.initUI();
 };
 
 Sampler.prototype.createButton = function (parent, id) {
@@ -118,8 +118,23 @@ Sampler.prototype.createButton = function (parent, id) {
             sampler.playSlot(id-1);
         }
     });
+
+    var buttonLoad = document.createElement('a');
+    buttonLoad.innerHTML = 'Load sound';
+    buttonLoad.style.display = 'block';
+    buttonLoad.dataset.samplerId = id;
+    buttonLoad.addEventListener('click', function (e) {
+        var fi = document.createElement('input');
+        fi.type = 'file';
+        fi.id = 'file-input';
+        fi.dataset.samplerId = this.dataset.samplerId;
+        fi.addEventListener('change', sampler.loadLocalSound, false);
+        fi.click();
+    });
+
     var container = document.createElement('div');
     container.classList.add('imageContainer', 'col-md-4', 'col-xs-6');
+    container.appendChild(buttonLoad);
     container.appendChild(button);
     console.log('Appending button #' + id);
     parent.appendChild(container);
@@ -194,14 +209,16 @@ Sampler.prototype.initUI = function () {
             sampler.createButton(tabPane, x);
         }
         tabContent.appendChild(tabPane);
-
-        sampler.container.appendChild(samplerTabs);
-        sampler.container.appendChild(tabContent);
-
-        if (samplerTabs.firstChild) {
-            samplerTabs.firstChild.firstChild.click();
-        }
     }
+
+    sampler.container.appendChild(samplerTabs);
+    sampler.container.appendChild(tabContent);
+
+    if (samplerTabs.firstChild) {
+        samplerTabs.firstChild.firstChild.click();
+    }
+
+    sampler.container.style.display = 'block';
 };
 
 Sampler.prototype.init = function () {
@@ -233,8 +250,6 @@ Sampler.prototype.init = function () {
     );
 
     sampler.bufferLoader.load();
-    sampler.initUI();
-
     return 0;
 };
 
@@ -298,6 +313,7 @@ Sampler.prototype.keyPress = function (e, off) {
 };
 
 Sampler.prototype.loadLocalSound = function (e) {
+    var slotId = this.dataset.samplerId;
     var file = e.target.files[0];
     if (!file) {
         return;
@@ -312,8 +328,8 @@ Sampler.prototype.loadLocalSound = function (e) {
                     alert('error decoding file data: ' + url);
                     return;
                 }
-                sampler.bufferL[0] = buffer;
-                console.log('Archivo cargado :D mandale play');
+                sampler.bufferL[slotId-1] = buffer;
+                console.log('Loaded file :D');
             },
             function(error) {
                 console.error('decodeAudioData error', error);
