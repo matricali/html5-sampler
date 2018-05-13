@@ -120,9 +120,11 @@ Sampler.prototype.createButton = function (parent, id) {
     });
 
     var buttonLoad = document.createElement('a');
-    buttonLoad.innerHTML = 'Load sound';
+    buttonLoad.title = 'Load sound';
+    buttonLoad.innerHTML = '<img src="data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjE2cHgiIGhlaWdodD0iMTZweCIgdmlld0JveD0iMCAwIDQ1IDQ1IiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCA0NSA0NTsiIHhtbDpzcGFjZT0icHJlc2VydmUiPgo8Zz4KCTxwYXRoIGQ9Ik00NC40NSwxMy40MzZjLTAuNDc0LTAuNTkxLTEuMTkyLTAuOTM2LTEuOTUtMC45MzZINDBjMC0xLjM4MS0xLjExOS0yLjUtMi41LTIuNUgzNVY3LjVDMzUsNi4xMTksMzMuODgxLDUsMzIuNSw1aC0zMCAgIEMxLjExOSw1LDAsNi4xMTksMCw3LjV2MzBDMCwzOC44ODEsMS4xMTksNDAsMi41LDQwaDVoMjVoNWMxLjE3MiwwLDIuMTg4LTAuODE0LDIuNDM5LTEuOTU4bDUtMjIuNSAgIEM0NS4xMDUsMTQuODAyLDQ0LjkyNSwxNC4wMjcsNDQuNDUsMTMuNDM2eiBNMi41LDcuNWgzMFYxMEgzMGMtMS4zODEsMC0yLjUsMS4xMTktMi41LDIuNWgtMTVjLTEuMTcyLDAtMi4xODYsMC44MTQtMi40NCwxLjk1OCAgIGMwLDAtNS4wNTgsMjIuODYyLTUuMDU4LDIzLjA0MkgyLjVWNy41TDIuNSw3LjV6IiBmaWxsPSIjRkZGRkZGIi8+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPC9zdmc+Cg==" /> Load sound';
     buttonLoad.style.display = 'block';
     buttonLoad.dataset.samplerId = id;
+    buttonLoad.style.cursor = 'pointer';
     buttonLoad.addEventListener('click', function (e) {
         var fi = document.createElement('input');
         fi.type = 'file';
@@ -265,7 +267,7 @@ Sampler.prototype.playSound = function (buffer, time) {
 Sampler.prototype.playSlot = function (slot_id, no_cortar) {
     var sampler = this;
     if (no_cortar !== undefined && no_cortar) {
-        playSound(sampler.bufferL[slot_id], 0);
+        sampler.playSound(sampler.bufferL[slot_id], 0);
         return;
     }
 
@@ -281,33 +283,36 @@ Sampler.prototype.playSlot = function (slot_id, no_cortar) {
 Sampler.prototype.keyPress = function (e, off) {
     var offset = off | 0;
     console.log('Pressed key', e.which);
+    var callClick = function (id, offset) {
+        document.querySelector('button[data-sampler-id="' + (id + offset) + '"]').click();
+    };
     switch (e.which) {
         case 49:
-            sampler.playSlot(0 + offset, e.ctrlKey);
+            callClick(1, offset);
             break;
         case 50:
-            sampler.playSlot(1 + offset, e.ctrlKey);
+            callClick(2, offset);
             break;
         case 51:
-            sampler.playSlot(2 + offset, e.ctrlKey);
+            callClick(3, offset);
             break;
         case 52:
-            sampler.playSlot(3 + offset, e.ctrlKey);
+            callClick(4, offset);
             break;
         case 53:
-            sampler.playSlot(4 + offset, e.ctrlKey);
+            callClick(5, offset);
             break;
         case 54:
-            sampler.playSlot(5 + offset, e.ctrlKey);
+            callClick(6, offset);
             break;
         case 55:
-            sampler.playSlot(6 + offset, e.ctrlKey);
+            callClick(7, offset);
             break;
         case 56:
-            sampler.playSlot(7 + offset, e.ctrlKey);
+            callClick(8, offset);
             break;
         case 57:
-            sampler.playSlot(8 + offset, e.ctrlKey);
+            callClick(9, offset);
             break;
     }
 };
