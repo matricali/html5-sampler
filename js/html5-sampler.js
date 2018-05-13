@@ -121,7 +121,7 @@ Sampler.prototype.createButton = function (parent, id) {
 
     var buttonLoad = document.createElement('a');
     buttonLoad.title = 'Load sound';
-    buttonLoad.innerHTML = '<img src="data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjE2cHgiIGhlaWdodD0iMTZweCIgdmlld0JveD0iMCAwIDQ1IDQ1IiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCA0NSA0NTsiIHhtbDpzcGFjZT0icHJlc2VydmUiPgo8Zz4KCTxwYXRoIGQ9Ik00NC40NSwxMy40MzZjLTAuNDc0LTAuNTkxLTEuMTkyLTAuOTM2LTEuOTUtMC45MzZINDBjMC0xLjM4MS0xLjExOS0yLjUtMi41LTIuNUgzNVY3LjVDMzUsNi4xMTksMzMuODgxLDUsMzIuNSw1aC0zMCAgIEMxLjExOSw1LDAsNi4xMTksMCw3LjV2MzBDMCwzOC44ODEsMS4xMTksNDAsMi41LDQwaDVoMjVoNWMxLjE3MiwwLDIuMTg4LTAuODE0LDIuNDM5LTEuOTU4bDUtMjIuNSAgIEM0NS4xMDUsMTQuODAyLDQ0LjkyNSwxNC4wMjcsNDQuNDUsMTMuNDM2eiBNMi41LDcuNWgzMFYxMEgzMGMtMS4zODEsMC0yLjUsMS4xMTktMi41LDIuNWgtMTVjLTEuMTcyLDAtMi4xODYsMC44MTQtMi40NCwxLjk1OCAgIGMwLDAtNS4wNTgsMjIuODYyLTUuMDU4LDIzLjA0MkgyLjVWNy41TDIuNSw3LjV6IiBmaWxsPSIjRkZGRkZGIi8+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPC9zdmc+Cg==" /> Load sound';
+    buttonLoad.innerHTML = '📁 Load sound';
     buttonLoad.style.display = 'block';
     buttonLoad.dataset.samplerId = id;
     buttonLoad.style.cursor = 'pointer';
@@ -239,6 +239,10 @@ Sampler.prototype.init = function () {
         console.log('ERROR: The sampler cannot be started.');
         return -1;
     }
+
+    context.resume().then(function () {
+        console.log('Audio context playback resumed successfully');
+    });
 
     sampler.gainNode = sampler.context.createGain ? sampler.context.createGain() : sampler.context.createGainNode();
     sampler.gainNode.connect(sampler.context.destination);
