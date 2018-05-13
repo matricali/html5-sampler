@@ -146,106 +146,36 @@ SOFTWARE.
             ul.nav-tabs li.active a {
                 color: #000;
             }
+            @media (max-width: 600px) {
+                #fork-me {
+                    display: none;
+                }
+            }
         </style>
     </head>
     <body>
-        <div id="sampler-machine">
+        <div id="sampler-machine" style="display: none;">
 
             <ul class="nav nav-tabs" role="tablist">
                 <li role="presentation" class="active"><a href="#1-8" aria-controls="1-8" role="tab" data-toggle="tab">1-8</a></li>
                 <li role="presentation"><a href="#9-16" aria-controls="9-16" role="tab" data-toggle="tab">9-16</a></li>
                 <li role="presentation"><a href="#17-24" aria-controls="17-24" role="tab" data-toggle="tab">17-24</a></li>
+                <li role="presentation"><a href="#25-32" aria-controls="25-32" role="tab" data-toggle="tab">25-32</a></li>
             </ul>
 
 
-            <div id="sampler" style="display: none;" class="container-fluid">
+            <div id="sampler" class="container-fluid">
                 <div class="tab-content">
-                    <div role="tabpanel" class="tab-pane active" id="1-8">
-                        <div class="imageContainer col-md-4 col-xs-6">
-                            <button class="btn btn-sampler" data-sampler-id="1">Sampler 1</button>
-                        </div>
-                        <div class="imageContainer col-md-4 col-xs-6">
-                            <button class="btn btn-sampler" data-sampler-id="2">Sampler 2</button>
-                        </div>
-                        <div class="imageContainer col-md-4 col-xs-6">
-                            <button class="btn btn-sampler" data-sampler-id="3">Sampler 3</button>
-                        </div>
-                        <div class="imageContainer col-md-4 col-xs-6">
-                            <button class="btn btn-sampler" data-sampler-id="4">Sampler 4</button>
-                        </div>
-                        <div class="imageContainer col-md-4 col-xs-6">
-                            <button class="btn btn-sampler" data-sampler-id="5">Sampler 5</button>
-                        </div>
-                        <div class="imageContainer col-md-4 col-xs-6">
-                            <button class="btn btn-sampler" data-sampler-id="6">Sampler 6</button>
-                        </div>
-                        <div class="imageContainer col-md-4 col-xs-6">
-                            <button class="btn btn-sampler" data-sampler-id="7">Sampler 7</button>
-                        </div>
-                        <div class="imageContainer col-md-4 col-xs-6">
-                            <button class="btn btn-sampler" data-sampler-id="8">Sampler 8</button>
-                        </div>
-                    </div>
-
-                    <div role="tabpanel" class="tab-pane" id="9-16">
-                        <div class="imageContainer col-md-4 col-xs-6">
-                            <button class="btn btn-sampler" data-sampler-id="9">Sampler 9</button>
-                        </div>
-                        <div class="imageContainer col-md-4 col-xs-6">
-                            <button class="btn btn-sampler" data-sampler-id="10">Sampler 10</button>
-                        </div>
-                        <div class="imageContainer col-md-4 col-xs-6">
-                            <button class="btn btn-sampler" data-sampler-id="11">Sampler 11</button>
-                        </div>
-                        <div class="imageContainer col-md-4 col-xs-6">
-                            <button class="btn btn-sampler" data-sampler-id="12">Sampler 12</button>
-                        </div>
-                        <div class="imageContainer col-md-4 col-xs-6">
-                            <button class="btn btn-sampler" data-sampler-id="13">Sampler 13</button>
-                        </div>
-                        <div class="imageContainer col-md-4 col-xs-6">
-                            <button class="btn btn-sampler" data-sampler-id="14">Sampler 14</button>
-                        </div>
-                        <div class="imageContainer col-md-4 col-xs-6">
-                            <button class="btn btn-sampler" data-sampler-id="15">Sampler 15</button>
-                        </div>
-                        <div class="imageContainer col-md-4 col-xs-6">
-                            <button class="btn btn-sampler" data-sampler-id="16">Sampler 16</button>
-                        </div>
-                    </div>
-
-                    <div role="tabpanel" class="tab-pane" id="17-24">
-                        <div class="imageContainer col-md-4 col-xs-6">
-                            <button class="btn btn-sampler" data-sampler-id="9">Sampler 17</button>
-                        </div>
-                        <div class="imageContainer col-md-4 col-xs-6">
-                            <button class="btn btn-sampler" data-sampler-id="10">Sampler 18</button>
-                        </div>
-                        <div class="imageContainer col-md-4 col-xs-6">
-                            <button class="btn btn-sampler" data-sampler-id="11">Sampler 19</button>
-                        </div>
-                        <div class="imageContainer col-md-4 col-xs-6">
-                            <button class="btn btn-sampler" data-sampler-id="12">Sampler 20</button>
-                        </div>
-                        <div class="imageContainer col-md-4 col-xs-6">
-                            <button class="btn btn-sampler" data-sampler-id="13">Sampler 21</button>
-                        </div>
-                        <div class="imageContainer col-md-4 col-xs-6">
-                            <button class="btn btn-sampler" data-sampler-id="14">Sampler 22</button>
-                        </div>
-                        <div class="imageContainer col-md-4 col-xs-6">
-                            <button class="btn btn-sampler" data-sampler-id="15">Sampler 23</button>
-                        </div>
-                        <div class="imageContainer col-md-4 col-xs-6">
-                            <button class="btn btn-sampler" data-sampler-id="16">Sampler 24</button>
-                        </div>
-                    </div>
+                    <div role="tabpanel" class="tab-pane active" id="1-8"></div>
+                    <div role="tabpanel" class="tab-pane" id="9-16"></div>
+                    <div role="tabpanel" class="tab-pane" id="17-24"></div>
+                    <div role="tabpanel" class="tab-pane" id="25-32"></div>
                 </div>
             </div>
             <div id="speaker"></div>
         </div>
 
-        <a href="https://github.com/jorge-matricali/html5-sampler/">
+        <a href="https://github.com/jorge-matricali/html5-sampler/" id="fork-me">
             <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png" alt="Fork me on GitHub">
         </a>
 
@@ -261,58 +191,49 @@ SOFTWARE.
             }
 
             function onLoad(e) {
-                sampler = new Sampler();
+                sampler = new Sampler(
+                    document.getElementById('sampler-machine'),
+                    {
+                        options: {
+                            samplesPerPage: 8,
+                            samplesPages: 4
+                        },
+                        samples: [
+                            'audio/hardkick.wav',
+                            'audio/kick3.wav',
+                            'audio/Shatter.wav',
+                            'audio/snare3.wav',
+                            'audio/AirHorn-Reggae.mp3',
+                            'audio/Triple-Horn.mp3',
+                            'audio/Wooy.mp3',
+                            'audio/Boat-Land-Man.mp3',
+                            'audio/Ya-Man.mp3',
+                            'audio/Yes-JAH.mp3',
+                            'audio/The-Rockers-to-Rockers.mp3',
+                            'audio/Laseers002.wav',
+                            // ...
+                            'audio/Laseers003.wav',
+                            'audio/Mortal-Pulop.mp3',
+                            'audio/No-No-No-Intro-long.mp3',
+                            'audio/No-No-No-Intro-short.mp3',
+                        ]
+                    }
+                );
                 sampler.init();
 
                 document.getElementById('file-input')
                     .addEventListener('change', sampler.loadLocalSound, false);
 
-                var buttons = document.querySelectorAll('#sampler button');
-
-                [].forEach.call(buttons, function (b) {
-                    b.addEventListener('click', function (e) {
-                        var id = this.dataset.samplerId;
-                        if (id) {
-                            sampler.playSlot(id-1);
-                        }
-                    })
-                });
-
-                var tabs = document.querySelectorAll('a[data-toggle="tab"]');
-
-                [].forEach.call(tabs, function (t) {
-                    t.addEventListener('click', function (e) {
-                        var id = this.getAttribute('aria-controls');
-
-                        var tabPanes = document.querySelectorAll('.tab-pane');;
-                        [].forEach.call(tabPanes, function (e) {
-                            e.classList.remove('active');
-                        });
-
-                        var tabs = document.querySelectorAll('a[data-toggle="tab"]');
-                        [].forEach.call(tabs, function (e) {
-                            e.parentNode.classList.remove('active');
-                            if (e.getAttribute('aria-controls') == id) {
-                                e.parentNode.classList.add('active');
-                            }
-                        });
-
-                        if (id) {
-                            var elm = document.getElementById(id);
-                            elm.classList.add('active');
-                        }
-                    })
-                })
 
                 document.addEventListener('keypress', function (e) {
                     var offset = 0;
 
-                    if (document.getElementById('9-16').classList.contains('active')) {
-                        offset = 8;
-                    }
-                    if (document.getElementById('17-24').classList.contains('active')) {
-                        offset = 16;
-                    }
+                    // if (document.getElementById('9-16').classList.contains('active')) {
+                    //     offset = 8;
+                    // }
+                    // if (document.getElementById('17-24').classList.contains('active')) {
+                    //     offset = 16;
+                    // }
 
                     sampler.keyPress(e, offset);
                 })
