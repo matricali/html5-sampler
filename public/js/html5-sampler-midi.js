@@ -22,6 +22,7 @@ var keys = {
     58: 15
 };
 
+
 if (navigator.requestMIDIAccess) {
     navigator.requestMIDIAccess()
     .then(function (access) {
@@ -37,7 +38,9 @@ if (navigator.requestMIDIAccess) {
             if (e.data[0] == 144) {
                 console.log('Pressed note', e.data[1]);
                 if (keys.hasOwnProperty(e.data[1])) {
-                    playSlot(keys[e.data[1]], false);
+                    if (sampler) {
+                        sampler.playSlot(keys[e.data[1]], false);
+                    }
                 }
             }
             if (e.data[0] == 128) {
