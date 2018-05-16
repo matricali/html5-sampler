@@ -342,6 +342,11 @@ Sampler.prototype.keyPress = function (e, off) {
         case 57:
             callClick(9, offset);
             break;
+        case 114: // R - resume playback
+            sampler.context.resume().then(function () {
+                console.log('Audio context playback resumed successfully');
+            });
+            break;
     }
 };
 
