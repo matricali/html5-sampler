@@ -77,6 +77,10 @@ function arrayHasOwnIndex(array, prop) {
 }
 
 function Sampler(container, config) {
+    'use strict';
+
+    var slots = [];
+
     if (!(container instanceof HTMLElement)) {
         console.error(':@');
         return;
@@ -100,6 +104,7 @@ function Sampler(container, config) {
     this.analyser = null;
     this.analyserCanvas = null;
     this.analyserCanvasCtx = null;
+    this.slots = slots;
 }
 
 Sampler.prototype.finishedLoading = function (bufferList) {
@@ -111,17 +116,6 @@ Sampler.prototype.finishedLoading = function (bufferList) {
 };
 
 Sampler.prototype.createButton = function (parent, id) {
-    var button = document.createElement('button');
-    button.classList.add('btn', 'btn-sampler');
-    button.dataset.samplerId = id;
-    button.innerHTML = 'Sampler ' + id;
-    button.addEventListener('click', function (e) {
-        var id = this.dataset.samplerId;
-        if (id) {
-            sampler.playSlot(id-1);
-        }
-    });
-
     var buttonLoad = document.createElement('a');
     buttonLoad.title = 'Load sound';
     buttonLoad.innerHTML = '📁 Load sound';
@@ -137,12 +131,36 @@ Sampler.prototype.createButton = function (parent, id) {
         fi.click();
     });
 
-    var container = document.createElement('div');
-    container.classList.add('imageContainer', 'col-md-4', 'col-xs-6');
-    container.appendChild(buttonLoad);
-    container.appendChild(button);
-    console.log('Appending button #' + id);
-    parent.appendChild(container);
+    var buttonLoop = document.createElement('a');
+    buttonLoop.title = 'Loop';
+    buttonLoop.innerHTML = '🔁 Enable loop';
+    buttonLoop.style.display = 'block';
+    buttonLoop.dataset.samplerId = id;
+    buttonLoop.style.cursor = 'pointer';
+    buttonLoop.addEventListener('click', function (e) {
+        var slotDiv = this.parentNode;
+        if (slotDiv && slotDiv.dataset.loop === '1') {
+            slotDiv.dataset.loop = 0;
+            this.innerHTML = '🔁 Enable loop';
+            this.style.textShadow = 'none';
+            sampler.slots[this.dataset.samplerId-1].setProperty('loop', false);
+            return;
+        }
+        slotDiv.dataset.loop = 1;
+        this.innerHTML = '🔁 Disable loop';
+        this.style.textShadow = '1px 1px red';
+        sampler.slots[this.dataset.samplerId-1].setProperty('loop', true);
+    });
+
+    var buttonsContainer = document.createElement('div');
+    buttonsContainer.classList.add('imageContainer', 'col-md-4', 'col-xs-6');
+    buttonsContainer.appendChild(buttonLoad);
+    buttonsContainer.appendChild(buttonLoop);
+
+    var pad = new SamplerPad(id, this.context, this.gainNode);
+    buttonsContainer.appendChild(pad.node());
+    parent.appendChild(buttonsContainer);
+    return pad;
 };
 
 Sampler.prototype.onTabChange = function (e) {
@@ -191,7 +209,7 @@ Sampler.prototype.initUI = function () {
 
     sampler.analyserCanvas = visualizer;
     sampler.analyserCanvasCtx = visualizer.getContext('2d');
-
+    var n = 0;
     for (var i = 0; i < sampler.config.options.samplesPages; i++) {
         console.log('Pagina #'+(i+1));
 
@@ -220,7 +238,8 @@ Sampler.prototype.initUI = function () {
         tabPane.id = name;
 
         for (var x = min; x <= max; x++) {
-            sampler.createButton(tabPane, x);
+            this.slots[n] = sampler.createButton(tabPane, x);
+            n = n + 1;
         }
         tabContent.appendChild(tabPane);
     }
@@ -228,6 +247,8 @@ Sampler.prototype.initUI = function () {
     sampler.container.appendChild(visualizer);
     sampler.container.appendChild(samplerTabs);
     sampler.container.appendChild(tabContent);
+
+
 
     if (samplerTabs.firstChild) {
         samplerTabs.firstChild.firstChild.click();
@@ -263,6 +284,7 @@ Sampler.prototype.init = function () {
     sampler.gainNode = sampler.context.createGain ? sampler.context.createGain() : sampler.context.createGainNode();
     sampler.gainNode.connect(sampler.context.destination);
     sampler.gainNode.gain.value = 0.7;
+    sampler.gainNode.connect(sampler.analyser);
 
     console.log('AudioContext created successfully.\nLoading sounds...');
     sampler.bufferLoader = new BufferLoader(
@@ -275,44 +297,15 @@ Sampler.prototype.init = function () {
     return 0;
 };
 
-Sampler.prototype.playSound = function (buffer, time) {
-    var sampler = this;
-    var source = sampler.context.createBufferSource();
-    source.buffer = buffer;
-    source.connect(sampler.analyser);
-    source.connect(sampler.gainNode);
-    source.start(time);
-    // window.setInterval(function(){
-    //     console.log(source);
-    // }, 500);
-    // onPlaying: (playingProgress, maximumValue, currentValue) => {
-    //         console.log('playing: ', playingProgress, maximumValue, currentValue);
-    //         playerUI.setPlayingProgress(playingProgress);
-    //     },
-    return source;
-};
-
 Sampler.prototype.playSlot = function (slot_id, no_cortar) {
-    var sampler = this;
-    if (no_cortar !== undefined && no_cortar) {
-        sampler.playSound(sampler.bufferL[slot_id], 0);
-        return;
-    }
-
-    if (sampler.bsdkd.hasOwnProperty(slot_id)) {
-        sampler.bsdkd[slot_id].stop();
-    }
-
-    if (sampler.bufferL.hasOwnProperty(slot_id)) {
-        sampler.bsdkd[slot_id] = sampler.playSound(sampler.bufferL[slot_id], 0);
-    }
+    this.slots[slot_id].play(this.bufferL[slot_id]);
 };
 
 Sampler.prototype.keyPress = function (e, off) {
     var offset = off | 0;
     console.log('Pressed key', e.which);
     var callClick = function (id, offset) {
-        document.querySelector('button[data-sampler-id="' + (id + offset) + '"]').click();
+        sampler.slots[id - 1 + offset].click();
     };
     switch (e.which) {
         case 49:
@@ -427,4 +420,40 @@ Sampler.prototype.visualize = function () {
     };
 
     draw();
+};
+
+Sampler.prototype.loadLocalSound = function (e) {
+    var slotId = this.dataset.samplerId;
+    var file = e.target.files[0];
+    if (!file) {
+        return;
+    }
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        var contents = e.target.result;
+        sampler.context.decodeAudioData(
+            contents,
+            function(buffer) {
+                if (!buffer) {
+                    alert('error decoding file data: ' + url);
+                    return;
+                }
+                sampler.bufferL[slotId-1] = buffer;
+                console.log('Loaded file :D');
+            },
+            function(error) {
+                console.error('decodeAudioData error', error);
+            }
+        );
+    };
+    reader.readAsArrayBuffer(file);
+};
+
+
+Sampler.prototype.stopAll = function () {
+    [].forEach.call(this.slots, function (e) {
+        if (e._source !== null) {
+            e._source.stop();
+        }
+    });
 };
