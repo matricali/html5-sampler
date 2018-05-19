@@ -105,6 +105,7 @@ function Sampler(container, config) {
     this.analyserCanvas = null;
     this.analyserCanvasCtx = null;
     this.slots = slots;
+    this._volume = 70;
 }
 
 Sampler.prototype.finishedLoading = function (bufferList) {
@@ -209,6 +210,27 @@ Sampler.prototype.initUI = function () {
 
     sampler.analyserCanvas = visualizer;
     sampler.analyserCanvasCtx = visualizer.getContext('2d');
+
+    var onVolumeChange = function (e) {
+        sampler.setMasterVolume(e.target.value);
+    };
+
+    var masterVolumeInput = document.createElement('input');
+    masterVolumeInput.id = 'masterVolume';
+    masterVolumeInput.type = 'range';
+    masterVolumeInput.min = 0;
+    masterVolumeInput.max = 100;
+    masterVolumeInput.style.display = 'inline-block';
+    masterVolumeInput.value = this._volume;
+    masterVolumeInput.onchange = onVolumeChange;
+    masterVolumeInput.oninput = onVolumeChange;
+
+    var volumeLabel = document.createElement('a');
+    volumeLabel.innerHTML = '🔈';
+    volumeLabel.addEventListener('click', function (e) {
+        sampler.setMasterVolume(0);
+    });
+
     var n = 0;
     for (var i = 0; i < sampler.config.options.samplesPages; i++) {
         console.log('Pagina #'+(i+1));
@@ -246,6 +268,8 @@ Sampler.prototype.initUI = function () {
 
     sampler.container.appendChild(visualizer);
     sampler.container.appendChild(samplerTabs);
+    sampler.container.appendChild(volumeLabel);
+    sampler.container.appendChild(masterVolumeInput);
     sampler.container.appendChild(tabContent);
 
 
@@ -283,8 +307,8 @@ Sampler.prototype.init = function () {
 
     sampler.gainNode = sampler.context.createGain ? sampler.context.createGain() : sampler.context.createGainNode();
     sampler.gainNode.connect(sampler.context.destination);
-    sampler.gainNode.gain.value = 0.7;
     sampler.gainNode.connect(sampler.analyser);
+    sampler.setMasterVolume(sampler._volume);
 
     console.log('AudioContext created successfully.\nLoading sounds...');
     sampler.bufferLoader = new BufferLoader(
@@ -456,4 +480,13 @@ Sampler.prototype.stopAll = function () {
             e._source.stop();
         }
     });
+};
+
+Sampler.prototype.setMasterVolume = function (value) {
+    var input = document.getElementById('masterVolume');
+    this._volume = value;
+    this.gainNode.gain.value = value / 100;
+    if (input) {
+        input.value = value;
+    }
 };

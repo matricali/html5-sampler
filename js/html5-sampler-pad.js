@@ -26,7 +26,7 @@ SOFTWARE.
 function SamplerPad(id, context, destination) {
 	'use strict';
 
-	var defaultVolume = 20;
+	var defaultVolume = 100;
 	var canvas = document.createElement('button');
 
 	var button = document.createElement('button');
@@ -60,7 +60,8 @@ function SamplerPad(id, context, destination) {
 		 */
 		'_properties': {
 			'loop': false,
-			'volume': defaultVolume
+			'volume': defaultVolume,
+			'cut': id,
 		},
 
 		/*
