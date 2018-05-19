@@ -138,7 +138,6 @@ function SamplerPad(id, context, destination) {
 
 		'play': function(buffer) {
 			console.log('Playing slot', this._id);
-			this._playing = true;
 			var slot = this;
 			var button = this._button;
 
@@ -146,9 +145,27 @@ function SamplerPad(id, context, destination) {
 		    var properties = this._properties;
 
 			if (this._source !== null) {
-				// Teniamos un sonido sonando previamente.
-				this._source.onended = null;
-				this._source.stop();
+				if (this._playing && properties.loop) {
+					// Toggle loop
+					this._source.stop();
+					this._source = null;
+					return;
+				}
+			}
+
+			if (this._properties.cut !== false) {
+				var current = this._properties.cut;
+				var currentId = this._id;
+				[].forEach.call(sampler.slots, function (e) {
+					if (e._properties.cut === current) {
+						if (e._source !== null) {
+							if (e._id === currentId) {
+								e._source.onended = null;
+							}
+							e._source.stop();
+						}
+					}
+				});
 			}
 
 			var source = this._context.createBufferSource();
@@ -159,6 +176,7 @@ function SamplerPad(id, context, destination) {
 				slot._playing = false;
 				button.style.backgroundImage = 'linear-gradient(to bottom, #8f787e, #7d4c4f)';
 			}
+			this._playing = true;
 			source.start(0);
 			console.log(source);
 			this._source = source;

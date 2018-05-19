@@ -153,10 +153,22 @@ Sampler.prototype.createButton = function (parent, id) {
         sampler.slots[this.dataset.samplerId-1].setProperty('loop', true);
     });
 
+    var cutBy = document.createElement('input');
+    cutBy.type = 'number';
+    cutBy.value = 0;
+    cutBy.min = 0;
+    cutBy.max = 64;
+    cutBy.dataset.samplerId = id;
+    cutBy.addEventListener('input', function (e) {
+        var value = e.target.value > 0 ? e.target.value - 1: false;
+        sampler.slots[e.target.dataset.samplerId-1].setProperty('cut', value);
+    });
+
     var buttonsContainer = document.createElement('div');
     buttonsContainer.classList.add('imageContainer', 'col-md-4', 'col-xs-6');
     buttonsContainer.appendChild(buttonLoad);
     buttonsContainer.appendChild(buttonLoop);
+    buttonsContainer.appendChild(cutBy);
 
     var pad = new SamplerPad(id, this.context, this.gainNode);
     buttonsContainer.appendChild(pad.node());
