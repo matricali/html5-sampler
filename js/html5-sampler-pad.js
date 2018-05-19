@@ -34,52 +34,11 @@ function SamplerPad(id, context, destination) {
     button.dataset.samplerId = id;
     button.innerHTML = 'Sampler ' + id;
 
-    // var buttonLoad = document.createElement('a');
-    // buttonLoad.title = 'Load sound';
-    // buttonLoad.innerHTML = '📁 Load sound';
-    // buttonLoad.style.display = 'block';
-    // buttonLoad.dataset.samplerId = id;
-    // buttonLoad.style.cursor = 'pointer';
-    // buttonLoad.addEventListener('click', function (e) {
-    //     var fi = document.createElement('input');
-    //     fi.type = 'file';
-    //     fi.id = 'file-input';
-    //     fi.dataset.samplerId = this.dataset.samplerId;
-    //     fi.addEventListener('change', sampler.loadLocalSound, false);
-    //     fi.click();
-    // });
-	//
-    // var buttonLoop = document.createElement('a');
-    // buttonLoop.title = 'Loop';
-    // buttonLoop.innerHTML = '🔁 Enable loop';
-    // buttonLoop.style.display = 'block';
-    // buttonLoop.dataset.samplerId = id;
-    // buttonLoop.style.cursor = 'pointer';
-    // buttonLoop.addEventListener('click', function (e) {
-    //     var slotDiv = this.parentNode;
-    //     if (slotDiv && slotDiv.dataset.loop === '1') {
-    //         slotDiv.dataset.loop = 0;
-    //         this.innerHTML = '🔁 Enable loop';
-    //         this.style.textShadow = 'none';
-    //         return;
-    //     }
-    //     slotDiv.dataset.loop = 1;
-    //     this.innerHTML = '🔁 Disable loop';
-    //     this.style.textShadow = '1px 1px red';
-    // });
-	//
-    // var buttonsContainer = document.createElement('div');
-    // buttonsContainer.appendChild(volumeKnob.node());
-    // buttonsContainer.appendChild(buttonLoad);
-    // buttonsContainer.appendChild(buttonLoop);
-	//
-
 	var gainNode = context.createGain ? context.createGain() : context.createGainNode();
     gainNode.connect(destination);
     gainNode.gain.value = defaultVolume / 100;
 
     var div = document.createElement('div');
-    div.classList.add('imageContainer', 'col-md-4', 'col-xs-6');
     div.id = 'sampler-pad' + id;
     div.dataset.samplerPadId = id;
     div.appendChild(button);
@@ -113,14 +72,14 @@ function SamplerPad(id, context, destination) {
 		},
 
 		/*
-		 * Returns the value of a property of this knob.
+		 * Returns the value of a property of this pad.
 		 */
 		'getProperty': function(key) {
 			return this._properties[key];
 		},
 
 		/*
-		 * Return the DOM node representing this knob.
+		 * Return the DOM node representing this pad.
 		 */
 		'node': function() {
 			var div = this._div;
@@ -128,86 +87,21 @@ function SamplerPad(id, context, destination) {
 		},
 
 		/*
-		 * Redraw the knob on the canvas.
+		 * Redraw the pad on the canvas.
 		 */
 		'redraw': function() {
 			// this.resize();
 			// var properties = this._properties;
-			// var needle = properties.needle;
-			// var angleStart = properties.angleStart;
-			// var angleOffset = properties.angleOffset;
-			// var angleEnd = properties.angleEnd;
-			// var actualStart = angleStart + angleOffset;
-			// var actualEnd = angleEnd + angleOffset;
-			// var value = properties.val;
-			// var valueStr = value.toString();
-			// var valMin = properties.valMin;
-			// var valMax = properties.valMax;
-			// var relValue = (value - valMin) / (valMax - valMin);
-			// var relAngle = relValue * (angleEnd - angleStart);
-			// var angleVal = actualStart + relAngle;
-			// var colorTrack = properties.colorBG;
-			// var colorFilling = properties.colorFG;
-			// var trackWidth = properties.trackWidth;
-			// var height = this._height;
-			// var width = this._width;
-			// var smaller = width < height ? width : height;
-			// var centerX = 0.5 * width;
-			// var centerY = 0.5 * height;
-			// var radius = 0.4 * smaller;
-			// var lineWidth = Math.round(trackWidth * radius);
-			// var fontSize = 0.2 * smaller;
-			// var fontStr = fontSize.toString() + 'px sans-serif';
+			//
 			// var canvas = this._canvas;
 			// var ctx = canvas.getContext('2d');
+			// var width = 0;
+			// var height = 0;
 			//
 			// /*
 			//  * Clear the canvas.
 			//  */
 			// ctx.clearRect(0, 0, width, height);
-			//
-			// /*
-			//  * Draw the track.
-			//  */
-			// ctx.beginPath();
-			// ctx.arc(centerX, centerY, radius, actualStart, actualEnd);
-			// ctx.lineCap = 'butt';
-			// ctx.lineWidth = lineWidth;
-			// ctx.strokeStyle = colorTrack;
-			// ctx.stroke();
-			//
-			// /*
-			//  * Draw the filling.
-			//  */
-			// ctx.beginPath();
-			//
-			// /*
-			//  * Check if we're in needle mode.
-			//  */
-			// if (needle)
-			// 	ctx.arc(centerX, centerY, radius, angleVal - 0.1, angleVal + 0.1);
-			// else
-			// 	ctx.arc(centerX, centerY, radius, actualStart, angleVal);
-			//
-			// ctx.lineCap = 'butt';
-			// ctx.lineWidth = lineWidth;
-			// ctx.strokeStyle = colorFilling;
-			// ctx.stroke();
-			//
-			// /*
-			//  * Draw the number.
-			//  */
-			// ctx.font = fontStr;
-			// ctx.fillStyle = colorFilling;
-			// ctx.textAlign = 'center';
-			// ctx.textBaseline = 'middle';
-			// ctx.fillText(valueStr, centerX, centerY);
-			//
-			// /*
-			//  * Set the color of the input element.
-			//  */
-			// var elemInput = this._input;
-			// elemInput.style.color = colorFilling;
 		},
 
 		/*
@@ -222,10 +116,15 @@ function SamplerPad(id, context, destination) {
 		},
 
 		/*
-		 * Sets the value of a property of this knob.
+		 * Sets the value of a property of this pad.
 		 */
 		'setProperty': function(key, value) {
 			this._properties[key] = value;
+			if (key == 'loop') {
+				if (this._source !== null) {
+					this._source.loop = value;
+				}
+			}
 			this.redraw();
 		},
 
@@ -272,7 +171,6 @@ function SamplerPad(id, context, destination) {
 	var contextMenuListener = function(e) {
 		return false;
 	};
-
 
 	/*
 	 * This is called when the mouse button is depressed.

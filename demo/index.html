@@ -29,7 +29,6 @@ SOFTWARE.
         <meta name="author" content="Jorge Matricali <jorgematricali@gmail.com>">
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <!-- <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet"> -->
         <link rel="stylesheet" href="css/html5-sampler.css" />
     </head>
     <body>
@@ -41,7 +40,6 @@ SOFTWARE.
             <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png" alt="Fork me on GitHub">
         </a>
 
-        <script src="../js/pureknob.js"></script>
         <script src="../js/html5-sampler-pad.js"></script>
         <script src="../js/html5-sampler.js"></script>
         <script src="../js/html5-sampler-midi.js"></script>
@@ -95,67 +93,6 @@ SOFTWARE.
 
                     sampler.keyPress(e, offset);
                 })
-
-                function startRecording(stream, lengthInMS) {
-                  var recorder = new MediaRecorder(stream);
-                  var data = [];
-
-                  recorder.ondataavailable = function (event) {
-                      data.push(event.data);
-                  }
-
-                  recorder.start();
-
-                  console.log(recorder.state + ' for ' + (lengthInMS / 1000) + ' seconds...');
-
-                  let stopped = new Promise((resolve, reject) => {
-                    recorder.onstop = resolve;
-                    recorder.onerror = event => reject(event.name);
-                  });
-
-                  let recorded = wait(lengthInMS).then(
-                    () => recorder.state == "recording" && recorder.stop()
-                  );
-
-                  return Promise.all([
-                    stopped,
-                    recorded
-                  ])
-                  .then(() => data);
-                }
-
-                function stop(stream) {
-                  stream.getTracks().forEach(track => track.stop());
-                }
-
-                var recordButton = document.createElement('button');
-                recordButton.innerHTML = '🔴 Record';
-                recordButton.style.display = 'block';
-                recordButton.style.position = 'absolute';
-                recordButton.style.top = '0';
-                recordButton.style.left = '0';
-                recordButton.addEventListener("click", function() {
-                  navigator.mediaDevices.getUserMedia({
-                    video: true,
-                    audio: true
-                  }).then(stream => {
-                    preview.srcObject = stream;
-                    downloadButton.href = stream;
-                    preview.captureStream = preview.captureStream || preview.mozCaptureStream;
-                    return new Promise(resolve => preview.onplaying = resolve);
-                  }).then(() => startRecording(preview.captureStream(), recordingTimeMS))
-                  .then (recordedChunks => {
-                    let recordedBlob = new Blob(recordedChunks, { type: "video/webm" });
-                    recording.src = URL.createObjectURL(recordedBlob);
-                    downloadButton.href = recording.src;
-                    downloadButton.download = "RecordedVideo.webm";
-
-                    console.log("Successfully recorded " + recordedBlob.size + " bytes of " +
-                        recordedBlob.type + " media.");
-                  })
-                  .catch(console.log);
-                }, false);
-                sampler.container.appendChild(recordButton);
             }
 
             window.onload = onLoad;

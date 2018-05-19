@@ -77,7 +77,7 @@ function arrayHasOwnIndex(array, prop) {
 }
 
 function Sampler(container, config) {
-    // 'use strict';
+    'use strict';
 
     var slots = [];
 
@@ -116,8 +116,50 @@ Sampler.prototype.finishedLoading = function (bufferList) {
 };
 
 Sampler.prototype.createButton = function (parent, id) {
+    var buttonLoad = document.createElement('a');
+    buttonLoad.title = 'Load sound';
+    buttonLoad.innerHTML = '📁 Load sound';
+    buttonLoad.style.display = 'block';
+    buttonLoad.dataset.samplerId = id;
+    buttonLoad.style.cursor = 'pointer';
+    buttonLoad.addEventListener('click', function (e) {
+        var fi = document.createElement('input');
+        fi.type = 'file';
+        fi.id = 'file-input';
+        fi.dataset.samplerId = this.dataset.samplerId;
+        fi.addEventListener('change', sampler.loadLocalSound, false);
+        fi.click();
+    });
+
+    var buttonLoop = document.createElement('a');
+    buttonLoop.title = 'Loop';
+    buttonLoop.innerHTML = '🔁 Enable loop';
+    buttonLoop.style.display = 'block';
+    buttonLoop.dataset.samplerId = id;
+    buttonLoop.style.cursor = 'pointer';
+    buttonLoop.addEventListener('click', function (e) {
+        var slotDiv = this.parentNode;
+        if (slotDiv && slotDiv.dataset.loop === '1') {
+            slotDiv.dataset.loop = 0;
+            this.innerHTML = '🔁 Enable loop';
+            this.style.textShadow = 'none';
+            sampler.slots[this.dataset.samplerId-1].setProperty('loop', false);
+            return;
+        }
+        slotDiv.dataset.loop = 1;
+        this.innerHTML = '🔁 Disable loop';
+        this.style.textShadow = '1px 1px red';
+        sampler.slots[this.dataset.samplerId-1].setProperty('loop', true);
+    });
+
+    var buttonsContainer = document.createElement('div');
+    buttonsContainer.classList.add('imageContainer', 'col-md-4', 'col-xs-6');
+    buttonsContainer.appendChild(buttonLoad);
+    buttonsContainer.appendChild(buttonLoop);
+
     var pad = new SamplerPad(id, this.context, this.gainNode);
-    parent.appendChild(pad.node());
+    buttonsContainer.appendChild(pad.node());
+    parent.appendChild(buttonsContainer);
     return pad;
 };
 
@@ -202,10 +244,6 @@ Sampler.prototype.initUI = function () {
         tabContent.appendChild(tabPane);
     }
 
-    // var recordButton = document.createElement('button');
-    // recordButton.innerHTML = '🔴 Record';
-    //
-    // sampler.container.appendChild(recordButton);
     sampler.container.appendChild(visualizer);
     sampler.container.appendChild(samplerTabs);
     sampler.container.appendChild(tabContent);
@@ -382,4 +420,40 @@ Sampler.prototype.visualize = function () {
     };
 
     draw();
+};
+
+Sampler.prototype.loadLocalSound = function (e) {
+    var slotId = this.dataset.samplerId;
+    var file = e.target.files[0];
+    if (!file) {
+        return;
+    }
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        var contents = e.target.result;
+        sampler.context.decodeAudioData(
+            contents,
+            function(buffer) {
+                if (!buffer) {
+                    alert('error decoding file data: ' + url);
+                    return;
+                }
+                sampler.bufferL[slotId-1] = buffer;
+                console.log('Loaded file :D');
+            },
+            function(error) {
+                console.error('decodeAudioData error', error);
+            }
+        );
+    };
+    reader.readAsArrayBuffer(file);
+};
+
+
+Sampler.prototype.stopAll = function () {
+    [].forEach.call(this.slots, function (e) {
+        if (e._source !== null) {
+            e._source.stop();
+        }
+    });
 };
