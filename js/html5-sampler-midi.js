@@ -29,6 +29,7 @@ var inputs, outputs;
 
 // @TODO: Make it configurable
 var keys = {
+    // 1-1
     37: 0,
     39: 1,
     41: 2,
@@ -38,15 +39,34 @@ var keys = {
     40: 6,
     42: 7,
     53: 8,
-    55: 9,
-    57: 10,
-    59: 11,
-    52: 12,
-    54: 13,
-    56: 14,
-    58: 15
+    // 1–2
+    45: 9,
+    47: 10,
+    49: 11,
+    51: 12,
+    44: 13,
+    46: 14,
+    48: 15,
+    50: 16,
+    // 2-1
+    53: 17,
+    55: 18,
+    57: 19,
+    59: 20,
+    52: 21,
+    54: 22,
+    56: 23,
+    58: 24,
+    // 2-2
+    61: 25,
+    63: 26,
+    65: 27,
+    67: 28,
+    60: 29,
+    62: 30,
+    64: 31,
+    66: 32
 };
-
 
 if (navigator.requestMIDIAccess) {
     navigator.requestMIDIAccess()
@@ -54,12 +74,12 @@ if (navigator.requestMIDIAccess) {
         console.log('MIDI Access:', access);
         inputs = access.inputs.values();
         outputs = access.inputs.values();
-        access.onstatechange = function(e) {
-            // Print information about the (dis)connected MIDI controller
-            console.log(e.port.name, e.port.manufacturer, e.port.state);
-        };
+
         var receivemessage = function (e) {
             console.log('Received MIDI message', e);
+            if (!e.data) {
+                return;
+            }
             if (e.data[0] == 144) {
                 console.log('Pressed note', e.data[1]);
                 if (keys.hasOwnProperty(e.data[1])) {
@@ -72,6 +92,16 @@ if (navigator.requestMIDIAccess) {
                 console.log('Released note', e.data[1]);
             }
         };
+
+        access.onstatechange = function(e) {
+            // Print information about the (dis)connected MIDI controller
+            console.log(e.port.name, e.port.manufacturer, e.port.state, e);
+            if (e.port.state === 'connected') {
+                console.log('Conectado, vamo a agregarle la funcion');
+                e.port.onstatechange = receivemessage;
+            }
+        };
+
         for (var input = inputs.next(); input && !input.done; input = inputs.next()) {
             // each time there is a midi message call the onMIDIMessage function
             input.value.onmidimessage = receivemessage;
