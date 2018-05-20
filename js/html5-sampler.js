@@ -117,12 +117,10 @@ Sampler.prototype.finishedLoading = function (bufferList) {
 };
 
 Sampler.prototype.createButton = function (parent, id) {
-    var buttonLoad = document.createElement('a');
-    buttonLoad.title = 'Load sound';
-    buttonLoad.innerHTML = '📁 Load sound';
-    buttonLoad.style.display = 'block';
+    var buttonLoad = document.createElement('button');
+    buttonLoad.title = 'Load sample';
+    buttonLoad.classList.add('btn-load');
     buttonLoad.dataset.samplerId = id;
-    buttonLoad.style.cursor = 'pointer';
     buttonLoad.addEventListener('click', function (e) {
         var fi = document.createElement('input');
         fi.type = 'file';
@@ -132,28 +130,26 @@ Sampler.prototype.createButton = function (parent, id) {
         fi.click();
     });
 
-    var buttonLoop = document.createElement('a');
-    buttonLoop.title = 'Loop';
-    buttonLoop.innerHTML = '🔁 Enable loop';
-    buttonLoop.style.display = 'block';
+    var buttonLoop = document.createElement('button');
+    buttonLoop.title = 'Toggle loop mode';
+    buttonLoop.classList.add('btn-loop');
     buttonLoop.dataset.samplerId = id;
-    buttonLoop.style.cursor = 'pointer';
     buttonLoop.addEventListener('click', function (e) {
         var slotDiv = this.parentNode;
         if (slotDiv && slotDiv.dataset.loop === '1') {
             slotDiv.dataset.loop = 0;
-            this.innerHTML = '🔁 Enable loop';
-            this.style.textShadow = 'none';
+            this.classList.remove('enabled');
             sampler.slots[this.dataset.samplerId-1].setProperty('loop', false);
             return;
         }
         slotDiv.dataset.loop = 1;
-        this.innerHTML = '🔁 Disable loop';
-        this.style.textShadow = '1px 1px red';
+        this.classList.add('enabled');
         sampler.slots[this.dataset.samplerId-1].setProperty('loop', true);
     });
 
     var cutBy = document.createElement('input');
+    cutBy.title = 'Cut by';
+    cutBy.classList.add('input-cut-by');
     cutBy.type = 'number';
     cutBy.value = 0;
     cutBy.min = 0;
@@ -165,7 +161,7 @@ Sampler.prototype.createButton = function (parent, id) {
     });
 
     var buttonsContainer = document.createElement('div');
-    buttonsContainer.classList.add('imageContainer', 'col-md-4', 'col-xs-6');
+    buttonsContainer.classList.add('pad-container', 'col-md-4', 'col-xs-6');
     buttonsContainer.appendChild(buttonLoad);
     buttonsContainer.appendChild(buttonLoop);
     buttonsContainer.appendChild(cutBy);
@@ -333,15 +329,18 @@ Sampler.prototype.init = function () {
     return 0;
 };
 
-Sampler.prototype.playSlot = function (slot_id, no_cortar) {
-    this.slots[slot_id].play(this.bufferL[slot_id]);
+Sampler.prototype.playSlot = function (slot_id, velocity) {
+    this.slots[slot_id].play(this.bufferL[slot_id], velocity);
 };
 
-Sampler.prototype.keyPress = function (e, off) {
+Sampler.prototype.keyPress = function (e, off, r) {
+    var sampler = this;
     var offset = off | 0;
-    console.log('Pressed key', e.which);
+    var release = r | false;
+    console.log(release ? 'Released key' : 'Pressed key', e.which);
     var callClick = function (id, offset) {
-        sampler.slots[id - 1 + offset].click();
+        var mue = new MouseEvent(release ? 'mouseup' : 'mousedown', {'bubbles': true, 'cancellable': true, 'buttons': 1});
+        sampler.slots[id - 1 + offset]._button.dispatchEvent(mue);
     };
     switch (e.which) {
         case 49:

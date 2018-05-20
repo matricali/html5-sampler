@@ -129,20 +129,23 @@ function SamplerPad(id, context, destination) {
 			this.redraw();
 		},
 
-		'click': function() {
+		'click': function (velocity) {
 			var id = this._id;
 	        if (id) {
-	            sampler.playSlot(id-1);
+	            sampler.playSlot(id-1, velocity);
 	        }
 		},
 
-		'play': function(buffer) {
-			console.log('Playing slot', this._id);
+		'play': function(buffer, velocity) {
+			console.log('Playing slot', this._id, velocity);
 			var slot = this;
 			var button = this._button;
 
-			button.style.backgroundImage = 'linear-gradient(to bottom, #7d4c4f, #ffcc00)'
 		    var properties = this._properties;
+
+			if (typeof velocity === 'undefined') {
+				velocity = 100;
+			}
 
 			if (this._source !== null) {
 				if (this._playing && properties.loop) {
@@ -168,17 +171,21 @@ function SamplerPad(id, context, destination) {
 				});
 			}
 
+			var velocityGainNode = context.createGain ? context.createGain() : context.createGainNode();
+		    velocityGainNode.connect(this._gainNode);
+		    velocityGainNode.gain.value = velocity / 100;
+
 			var source = this._context.createBufferSource();
 		    source.buffer = buffer;
-		    source.connect(this._gainNode);
+		    source.connect(velocityGainNode);
 		    source.loop = properties.loop;
 			source.onended = function (e) {
 				slot._playing = false;
-				button.style.backgroundImage = 'linear-gradient(to bottom, #8f787e, #7d4c4f)';
+				button.classList.remove('playing');
 			}
 			this._playing = true;
+			button.classList.add('playing');
 			source.start(0);
-			console.log(source);
 			this._source = source;
 		}
 	};
@@ -195,6 +202,7 @@ function SamplerPad(id, context, destination) {
 	 * This is called when the mouse button is depressed.
 	 */
 	var mouseDownListener = function(e) {
+		console.log('ASD', e);
 		var btn = e.buttons;
 
 		/*
@@ -202,6 +210,7 @@ function SamplerPad(id, context, destination) {
 		 */
 		if (btn === 1) {
 			e.preventDefault();
+			pad._button.classList.add('pressed');
 			pad.click();
 			pad._mousebutton = true;
 		}
@@ -212,6 +221,7 @@ function SamplerPad(id, context, destination) {
 	 */
 	var mouseUpListener = function(e) {
 		// @TODO: Implementar trigger manteniendo apretado
+		pad._button.classList.remove('pressed');
 	};
 
 	/*

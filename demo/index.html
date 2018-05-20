@@ -93,6 +93,12 @@ SOFTWARE.
 
                     sampler.keyPress(e, offset);
                 })
+
+                document.addEventListener('keyup', function (e) {
+                    sampler.keyPress(e, 0, true);
+                })
+
+
             }
 
             window.onload = onLoad;

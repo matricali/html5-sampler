@@ -38,34 +38,33 @@ var keys = {
     38: 5,
     40: 6,
     42: 7,
-    53: 8,
     // 1–2
-    45: 9,
-    47: 10,
-    49: 11,
-    51: 12,
-    44: 13,
-    46: 14,
-    48: 15,
-    50: 16,
+    45: 8,
+    47: 9,
+    49: 10,
+    51: 11,
+    44: 12,
+    46: 13,
+    48: 14,
+    50: 15,
     // 2-1
-    53: 17,
-    55: 18,
-    57: 19,
-    59: 20,
-    52: 21,
-    54: 22,
-    56: 23,
-    58: 24,
+    53: 16,
+    55: 17,
+    57: 18,
+    59: 19,
+    52: 20,
+    54: 21,
+    56: 22,
+    58: 23,
     // 2-2
-    61: 25,
-    63: 26,
-    65: 27,
-    67: 28,
-    60: 29,
-    62: 30,
-    64: 31,
-    66: 32
+    61: 24,
+    63: 25,
+    65: 26,
+    67: 27,
+    60: 28,
+    62: 29,
+    64: 30,
+    66: 31
 };
 
 if (navigator.requestMIDIAccess) {
@@ -76,20 +75,25 @@ if (navigator.requestMIDIAccess) {
         outputs = access.inputs.values();
 
         var receivemessage = function (e) {
-            console.log('Received MIDI message', e);
+            console.log('Received MIDI message', e.data);
             if (!e.data) {
                 return;
             }
             if (e.data[0] == 144) {
-                console.log('Pressed note', e.data[1]);
+                // console.log('Pressed note', e.data[1]);
                 if (keys.hasOwnProperty(e.data[1])) {
                     if (sampler) {
-                        sampler.playSlot(keys[e.data[1]], false);
+                        var mde = new MouseEvent('mousedown', {'bubbles': true, 'cancellable': true, 'buttons': 1, 'velocity': e.data[2]});
+                        sampler.slots[keys[e.data[1]]]._button.dispatchEvent(mde);
                     }
                 }
             }
             if (e.data[0] == 128) {
                 console.log('Released note', e.data[1]);
+                if (sampler) {
+                    var mue = new MouseEvent('mouseup', {'bubbles': true, 'cancellable': true});
+                    sampler.slots[keys[e.data[1]]]._button.dispatchEvent(mue);
+                }
             }
         };
 
